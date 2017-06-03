@@ -28,6 +28,11 @@ class BeewiSmartBulb:
                         bytes([85,17,11,13,10])]
     SET_WHITE = bytes([85,20,255,255,255,13,10])
     SET_COLOR = bytearray([85,19,255,255,255,13,10])
+    SET_COLOR_SEQUENCE = [bytes([85,23, 8,13,10]),
+                          bytes([85,23, 9,13,10]),
+                          bytes([85,23,10,13,10]),
+                          bytes([85,23,11,13,10]),
+                          bytes([85,23,12,13,10])]
 
     CHARACTERISTIC_SMARTLITE_SETTINGS = "a8b3fff1-4834-4051-89d0-3de95cddd318"
     CHARACTERISTIC_SMARTLITE_READ_SETTINGS = "a8b3fff2-4834-4051-89d0-3de95cddd318"
@@ -56,10 +61,11 @@ class BeewiSmartBulb:
 
     def turnOn(self):
         self.writeSettings(BeewiSmartBulb.TURN_ON)
-        self.isWhite = 1
+        self.isOn = 1
 
     def turnOff(self):
         self.writeSettings(BeewiSmartBulb.TURN_OFF)
+        self.isOn = 0
 
     def setBrightness(self, brightness):
         if(brightness > 9 or brightness < 0):
@@ -89,6 +95,13 @@ class BeewiSmartBulb:
             self.SET_COLOR[4] = self.blue
 
             self.writeSettings(self.SET_COLOR)
+
+    def setColorSequence(self, sequence):
+        if (0 <= sequence <= 4):
+            self.isWhite = 0
+            self.writeSettings(BeewiSmartBulb.SET_COLOR_SEQUENCE[sequence])
+        else:
+            print ("Sequence must be a number from 0 to 4")
 
     def __del__(self):
         self.bulb.disconnect()
