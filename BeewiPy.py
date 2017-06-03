@@ -85,14 +85,11 @@ class BeewiSmartBulb:
             self.isWhite = 1
 
     def setColor(self, red, green, blue):
-        if(red >= 0 and red <= 255 and blue >= 0 and blue <= 255 and green >= 0 and green <= 255):
+        if(0 <= red <= 255) and (0 <= green <= 255) and (0 <= blue <= 255):
             self.isWhite = 0
-            self.red = red
-            self.green = green
-            self.blue = blue
-            self.SET_COLOR[2] = self.red
-            self.SET_COLOR[3] = self.green
-            self.SET_COLOR[4] = self.blue
+            self.SET_COLOR[2] = red
+            self.SET_COLOR[3] = green
+            self.SET_COLOR[4] = blue
 
             self.writeSettings(self.SET_COLOR)
 
