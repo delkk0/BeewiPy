@@ -34,8 +34,12 @@ class BeewiSmartBulb:
                           bytes([85,23,11,13,10]),
                           bytes([85,23,12,13,10])]
 
+    SERVICE_SMARTLITE_CONTROL = "a8b3fff0-4834-4051-89d0-3de95cddd318"
+
     CHARACTERISTIC_SMARTLITE_SETTINGS = "a8b3fff1-4834-4051-89d0-3de95cddd318"
     CHARACTERISTIC_SMARTLITE_READ_SETTINGS = "a8b3fff2-4834-4051-89d0-3de95cddd318"
+
+    SERVICE_SMARTLITE_DEVICE_INFORMATION = "0000180a-0000-1000-8000-00805f9b34fb"
     CHARACTERISTIC_SYSTEM_ID = "00002a23-0000-1000-8000-00805f9b34fb"
     CHARACTERISTIC_MODEL_NUMBER_STRING = "00002a24-0000-1000-8000-00805f9b34fb"
     CHARACTERISTIC_FIRMWARE_REVISION_STRING = "00002a26-0000-1000-8000-00805f9b34fb"
@@ -47,8 +51,17 @@ class BeewiSmartBulb:
         self.deviceAddress = deviceAddress
         self.bulb = Peripheral()
         self.bulb.connect(self.deviceAddress)
-        self.writeSettingCharacteristic = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_SMARTLITE_SETTINGS)[0]
-        self.readSettingCharacteristic = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_SMARTLITE_READ_SETTINGS)[0]
+<<<<<<< HEAD
+        self.serviceControl = self.bulb.getServiceByUUID(BeewiSmartBulb.SERVICE_SMARTLITE_CONTROL)
+        self.serviceInformartion = self.bulb.getServiceByUUID(BeewiSmartBulb.SERVICE_SMARTLITE_DEVICE_INFORMATION)
+
+        self.writeSettingCharacteristic = self.serviceControl.getCharacteristics(forUUID=BeewiSmartBulb.CHARACTERISTIC_SMARTLITE_SETTINGS)[0]
+        self.readSettingCharacteristic = self.bulb.getCharacteristics(forUUID=BeewiSmartBulb.CHARACTERISTIC_SMARTLITE_READ_SETTINGS)[0]
+
+=======
+        self.writeSettingCharacteristic = self.bulb.getCharacteristics(endHnd = 0x003f, uuid=BeewiSmartBulb.CHARACTERISTIC_SMARTLITE_SETTINGS)[0]
+        self.readSettingCharacteristic = self.bulb.getCharacteristics(endHnd = 0x003f, uuid=BeewiSmartBulb.CHARACTERISTIC_SMARTLITE_READ_SETTINGS)[0]
+>>>>>>> b22bc0c6cd5c54bc04a0c74e94b3ed7b8daf1cf4
         if (0x22 <= self.__readSettings()[1] <= 0xBB):
             self.isWhite = 1
         elif (self.__readSettings()[1] == 0xB0):
@@ -136,13 +149,21 @@ class BeewiSmartBulb:
         return self.settings
 
     def getHWInfo(self):
-        macAddress = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_SYSTEM_ID)[0].read()
-        modelNumberString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_MODEL_NUMBER_STRING)[0].read().decode('utf-8')[:-1]
-        fwRevisionString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_FIRMWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
-        hwRevisionString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_HARDWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
-        manufacturerName = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_MANUFACTURER_NAME_STRING)[0].read().decode('utf-8')[:-1]
+<<<<<<< HEAD
+        macAddress = self.serviceInformartion.getCharacteristics(forUUID=BeewiSmartBulb.CHARACTERISTIC_SYSTEM_ID)[0].read()
+        modelNumberString = self.serviceInformartion.getCharacteristics(forUUID=BeewiSmartBulb.CHARACTERISTIC_MODEL_NUMBER_STRING)[0].read().decode('utf-8')[:-1]
+        fwRevisionString = self.serviceInformartion.getCharacteristics(forUUID=BeewiSmartBulb.CHARACTERISTIC_FIRMWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
+        hwRevisionString = self.serviceInformartion.getCharacteristics(forUUID=BeewiSmartBulb.CHARACTERISTIC_HARDWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
+        manufacturerName = self.serviceInformartion.getCharacteristics(forUUID=BeewiSmartBulb.CHARACTERISTIC_MANUFACTURER_NAME_STRING)[0].read().decode('utf-8')[:-1]
+=======
+        macAddress = self.bulb.getCharacteristics(endHnd = 0x003f, uuid=BeewiSmartBulb.CHARACTERISTIC_SYSTEM_ID)[0].read()
+        modelNumberString = self.bulb.getCharacteristics(endHnd = 0x003f, uuid=BeewiSmartBulb.CHARACTERISTIC_MODEL_NUMBER_STRING)[0].read().decode('utf-8')[:-1]
+        fwRevisionString = self.bulb.getCharacteristics(endHnd = 0x003f, uuid=BeewiSmartBulb.CHARACTERISTIC_FIRMWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
+        hwRevisionString = self.bulb.getCharacteristics(endHnd = 0x003f, uuid=BeewiSmartBulb.CHARACTERISTIC_HARDWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
+        manufacturerName = self.bulb.getCharacteristics(endHnd = 0x003f, uuid=BeewiSmartBulb.CHARACTERISTIC_MANUFACTURER_NAME_STRING)[0].read().decode('utf-8')[:-1]
+>>>>>>> b22bc0c6cd5c54bc04a0c74e94b3ed7b8daf1cf4
 
-        print("MAC Address:       {:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}".format(macAddress[5], macAddress[4], macAddress[3], macAddress[2], macAddress[1], macAddress[0]))
+        print("MAC Address:       {:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}".format(macAddress[7], macAddress[6], macAddress[5], macAddress[2], macAddress[1], macAddress[0]))
         print("Model number:      {}".format(modelNumberString))
         print("Firmware revision: {}".format(fwRevisionString))
         print("Hardware revision: {}".format(hwRevisionString))
