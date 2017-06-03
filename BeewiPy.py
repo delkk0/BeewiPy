@@ -63,11 +63,11 @@ class BeewiSmartBulb:
             self.temperature = (self.settings[1] & 0x0F) - 2
         elif(0x20 <= self.settings[1] <= 0xB0):
             self.isWhite = 0
-        self.brightness = ((self.settings[1] & 0xF0) >> 8) - 2
+        self.brightness = ((self.settings[1] & 0xF0) >> 4) - 2
         self.red = self.settings[2]
         self.green = self.settings[3]
         self.blue = self.settings[4]
-        
+
         return self.settings
 
     def turnOn(self):
@@ -125,7 +125,7 @@ class BeewiSmartBulb:
             print("  WHITE/COLOR : {}".format(self.isWhite))
             print("   BRIGHTNESS : {}".format(self.brightness))
             print("  TEMPERATURE : {}".format(self.temperature))
-            print("COLOR (R/G/B) : {}".format(self.red, self.green, self.blue))
+            print("COLOR (R/G/B) : {} {} {}".format(self.red, self.green, self.blue))
 
         return self.settings
 
