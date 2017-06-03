@@ -136,7 +136,7 @@ class BeewiSmartBulb:
         return self.settings
 
     def getHWInfo(self):
-        macAddress = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_SYSTEM_ID)[0]
+        macAddress = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_SYSTEM_ID)[0].read()
         modelNumberString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_MODEL_NUMBER_STRING)[0].read().decode('utf-8')[:-1]
         fwRevisionString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_FIRMWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
         hwRevisionString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_HARDWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
