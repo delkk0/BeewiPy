@@ -58,14 +58,7 @@ class BeewiSmartBulb:
         self.writeSettingCharacteristic = self.serviceControl.getCharacteristics(forUUID=BeewiSmartBulb.CHARACTERISTIC_SMARTLITE_SETTINGS)[0]
         self.readSettingCharacteristic = self.serviceControl.getCharacteristics(forUUID=BeewiSmartBulb.CHARACTERISTIC_SMARTLITE_READ_SETTINGS)[0]
 
-        if (0x22 <= self.__readSettings()[1] <= 0xBB):
-            self.isWhite = 1
-        elif (self.__readSettings()[1] == 0xB0):
-            self.isWhite = 0
-        if (self.__readSettings()[1] == 0x01):
-            self.isOn = 1
-        elif (self.__readSettings()[1] == 0x00):
-            self.isOn = 0
+        self.settings = self.__readSettings()
 
     def __writeSettings(self, command):
         return self.writeSettingCharacteristic.write(command)
@@ -73,11 +66,12 @@ class BeewiSmartBulb:
     def __readSettings(self):
         self.settings = self.readSettingCharacteristic.read()
         self.isOn = self.settings[0]
-        if(0x22 <= self.settings[1] <= 0xBB):
+        if(0x2 <= (self.settings[1] & 0x0F) <= 0xB):
             self.isWhite = 1
             self.temperature = (self.settings[1] & 0x0F) - 2
-        elif(0x20 <= self.settings[1] <= 0xB0):
+        elif(0x0 <= (self.settings[1] & 0x0F) < 0x2):
             self.isWhite = 0
+            self.temperature = "N/A"
         self.brightness = ((self.settings[1] & 0xF0) >> 4) - 2
         self.red = self.settings[2]
         self.green = self.settings[3]
