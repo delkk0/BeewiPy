@@ -37,7 +37,7 @@ class BeewiSmartBulb:
     CHARACTERISTIC_SMARTLITE_SETTINGS = "a8b3fff1-4834-4051-89d0-3de95cddd318"
     CHARACTERISTIC_SMARTLITE_READ_SETTINGS = "a8b3fff2-4834-4051-89d0-3de95cddd318"
     CHARACTERISTIC_SYSTEM_ID = "00002a23-0000-1000-8000-00805f9b34fb"
-    CHARACTERISTIC_SERIAL_NUMBER_STRING = "00002a25-0000-1000-8000-00805f9b34fb"
+    CHARACTERISTIC_MODEL_NUMBER_STRING = "00002a24-0000-1000-8000-00805f9b34fb"
     CHARACTERISTIC_FIRMWARE_REVISION_STRING = "00002a26-0000-1000-8000-00805f9b34fb"
     CHARACTERISTIC_HARDWARE_REVISION_STRING = "00002a27-0000-1000-8000-00805f9b34fb"
     CHARACTERISTIC_SOFTWARE_REVISION_STRING = "00002a28-0000-1000-8000-00805f9b34fb"
@@ -138,13 +138,13 @@ class BeewiSmartBulb:
     def getHWInfo(self):
         macAddress = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_SYSTEM_ID)[0]
         modelNumberString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_MODEL_NUMBER_STRING)[0].read().decode('utf-8')[:-1]
-        serialNumberString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_SERIAL_NUMBER_STRING)[0].read().decode('utf-8')[:-1]
+        fwRevisionString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_FIRMWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
         hwRevisionString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_HARDWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
         manufacturerName = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_MANUFACTURER_NAME_STRING)[0].read().decode('utf-8')[:-1]
 
         print("MAC Address:       {}:{}:{}:{}:{}:{}".format(macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]))
         print("Model number:      {}".format(modelNumberString))
-        print("Serial number:     {}".format(serialNumberString))
+        print("Firmware revision: {}".format(serialNumberString))
         print("Hardware revision: {}".format(hwRevisionString))
         print("Manufacturer name: {}".format(manufacturerName))
 
