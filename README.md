@@ -29,6 +29,23 @@ myBulb.turnOff()                        # This will turn off your bulb
 ```
 ### The sky is the limit!
 
+## The BeewiSmartBulb class
+Every object instantiated from the BeewiSmartBulb class will have the following methods available:
+### turnOn()
+This method turns on the bulb
+### turnOff()
+This method turns off the bulb
+### setBrightness(value)
+This method will set the brightness value of the bulb. The accepted values range from 0 to 9.
+### setTemperature(value)
+This method will set the temperature value of the bulb. The accepted values range from 0 to 9, being 0 the coolest setting and 9 the warmest setting.
+### setColor(red, green, blue)
+This method will change the color of the bulb. The values passed for red, green and blue must be between 0 and 255.
+### setWhite()
+This method will change the bulb from color mode to white mode.
+### setColorSequence(value)
+This method will put the bulb in color sequence mode. In this mode the color of the bulb will cycle in predefined sequences. The value passed to this function range from 0 to 4.
+
 ## Authors
 * **David Polo**
 ## License
