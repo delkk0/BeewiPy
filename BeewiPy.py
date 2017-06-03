@@ -144,7 +144,7 @@ class BeewiSmartBulb:
 
         print("MAC Address:       {}:{}:{}:{}:{}:{}".format(macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]))
         print("Model number:      {}".format(modelNumberString))
-        print("Firmware revision: {}".format(serialNumberString))
+        print("Firmware revision: {}".format(fwRevisionString))
         print("Hardware revision: {}".format(hwRevisionString))
         print("Manufacturer name: {}".format(manufacturerName))
 
