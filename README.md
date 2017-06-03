@@ -28,3 +28,10 @@ time.sleep(5)                           # This will wait 5 seconds
 myBulb.turnOff()                        # This will turn off your bulb
 ```
 ### The sky is the limit!
+
+## Authors
+* **David Polo**
+## License
+This project is licensed under the GNU General Public License v.3
+## Acknowledgements
+* Special thanks to [IanHarvey](https://github.com/IanHarvey) for its [BluePy](https://github.com/IanHarvey/bluepy) library.
