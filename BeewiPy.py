@@ -47,7 +47,6 @@ class BeewiSmartBulb:
             self.isWhite = 1
         elif (self.__readSettings()[1] == 0xB0):
             self.isWhite = 0
-
         if (self.__readSettings()[1] == 0x01):
             self.isOn = 1
         elif (self.__readSettings()[1] == 0x00):
@@ -68,6 +67,8 @@ class BeewiSmartBulb:
         self.red = self.settings[2]
         self.green = self.settings[3]
         self.blue = self.settings[4]
+        
+        return self.settings
 
     def turnOn(self):
         self.__readSettings()
