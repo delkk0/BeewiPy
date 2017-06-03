@@ -43,62 +43,90 @@ class BeewiSmartBulb:
         self.bulb.connect(self.deviceAddress)
         self.writeSettingCharacteristic = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_SMARTLITE_SETTINGS)[0]
         self.readSettingCharacteristic = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_SMARTLITE_READ_SETTINGS)[0]
-        if (0x22 <= self.readSettings()[1] <= 0xBB):
+        if (0x22 <= self.__readSettings()[1] <= 0xBB):
             self.isWhite = 1
-        elif (self.readSettings()[1] == 0xB0):
+        elif (self.__readSettings()[1] == 0xB0):
             self.isWhite = 0
 
-        if (self.readSettings()[1] == 0x01):
+        if (self.__readSettings()[1] == 0x01):
             self.isOn = 1
-        elif (self.readSettings()[1] == 0x00):
+        elif (self.__readSettings()[1] == 0x00):
             self.isOn = 0
 
-    def writeSettings(self, command):
+    def __writeSettings(self, command):
         return self.writeSettingCharacteristic.write(command)
 
-    def readSettings(self):
-        return self.readSettingCharacteristic.read()
+    def __readSettings(self):
+        self.settings = self.readSettingCharacteristic.read()
+        self.isOn = self.settings[0]
+        if(0x22 <= self.settings[1] <= 0xBB):
+            self.isWhite = 1
+            self.temperature = (self.settings[1] & 0x0F) - 2
+        elif(0x20 <= self.settings[1] <= 0xB0):
+            self.isWhite = 0
+        self.brightness = ((self.settings[1] & 0xF0) >> 8) - 2
+        self.red = self.settings[2]
+        self.green = self.settings[3]
+        self.blue = self.settings[4]
 
     def turnOn(self):
-        self.writeSettings(BeewiSmartBulb.TURN_ON)
+        self.__readSettings()
+        self.__writeSettings(BeewiSmartBulb.TURN_ON)
         self.isOn = 1
 
     def turnOff(self):
-        self.writeSettings(BeewiSmartBulb.TURN_OFF)
+        self.__readSettings()
+        self.__writeSettings(BeewiSmartBulb.TURN_OFF)
         self.isOn = 0
 
     def setBrightness(self, brightness):
+        self.__readSettings()
         if(brightness > 9 or brightness < 0):
             print("Brightness should be a value between 0 and 9")
             return 1
-        self.writeSettings(BeewiSmartBulb.SET_BRIGHTNESS[brightness])
+        self.__writeSettings(BeewiSmartBulb.SET_BRIGHTNESS[brightness])
 
     def setTemperature(self, temperature):
+        self.__readSettings()
         if(temperature > 9 or temperature < 0):
             print("Temperature should be a value between 0 and 9")
             return 1
-        self.writeSettings(BeewiSmartBulb.SET_TEMPERATURE[temperature])
+        self.__writeSettings(BeewiSmartBulb.SET_TEMPERATURE[temperature])
 
     def setWhite(self):
+        self.__readSettings()
         if(not self.isWhite):
-            self.writeSettings(BeewiSmartBulb.SET_WHITE)
+            self.__writeSettings(BeewiSmartBulb.SET_WHITE)
             self.isWhite = 1
 
     def setColor(self, red, green, blue):
+        self.__readSettings()
         if(0 <= red <= 255) and (0 <= green <= 255) and (0 <= blue <= 255):
             self.isWhite = 0
             self.SET_COLOR[2] = red
             self.SET_COLOR[3] = green
             self.SET_COLOR[4] = blue
 
-            self.writeSettings(self.SET_COLOR)
+            self.__writeSettings(self.SET_COLOR)
 
     def setColorSequence(self, sequence):
+        self.__readSettings()
         if (0 <= sequence <= 4):
             self.isWhite = 0
-            self.writeSettings(BeewiSmartBulb.SET_COLOR_SEQUENCE[sequence])
+            self.__writeSettings(BeewiSmartBulb.SET_COLOR_SEQUENCE[sequence])
         else:
             print ("Sequence must be a number from 0 to 4")
+
+    def getSettings(self, verbose = 0):
+        self.__readSettings()
+        if verbose:
+            print("       ON/OFF : {}".format(self.isOn))
+            print("  WHITE/COLOR : {}".format(self.isWhite))
+            print("   BRIGHTNESS : {}".format(self.brightness))
+            print("  TEMPERATURE : {}".format(self.temperature))
+            print("COLOR (R/G/B) : {}".format(self.red, self.green, self.blue))
+
+        return self.settings
 
     def __del__(self):
         self.bulb.disconnect()
