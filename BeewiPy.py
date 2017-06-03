@@ -142,7 +142,7 @@ class BeewiSmartBulb:
         hwRevisionString = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_HARDWARE_REVISION_STRING)[0].read().decode('utf-8')[:-1]
         manufacturerName = self.bulb.getCharacteristics(uuid=BeewiSmartBulb.CHARACTERISTIC_MANUFACTURER_NAME_STRING)[0].read().decode('utf-8')[:-1]
 
-        print("MAC Address:       {:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}".format(macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]))
+        print("MAC Address:       {:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}".format(macAddress[5], macAddress[4], macAddress[3], macAddress[2], macAddress[1], macAddress[0]))
         print("Model number:      {}".format(modelNumberString))
         print("Firmware revision: {}".format(fwRevisionString))
         print("Hardware revision: {}".format(hwRevisionString))
