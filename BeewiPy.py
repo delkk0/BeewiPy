@@ -4,6 +4,9 @@ import time
 
 
 class BeewiSmartBulb:
+    '''
+    Class for interfacing with a Beewi SmartBulb
+    '''
     TURN_ON  = bytes([85,16, 1,13,10])
     TURN_OFF = bytes([85,16, 0,13,10])
     SET_BRIGHTNESS =   [bytes([85,18, 2,13,10]),
@@ -61,9 +64,41 @@ class BeewiSmartBulb:
         self.settings = self.__readSettings()
 
     def __writeSettings(self, command):
+        '''
+        Write settings to the bulb
+
+        Parameters
+        ----------
+        command : bytearray
+            Command to be sent to the bulb
+
+        Returns
+        -------
+
+        See also
+        --------
+        BeewiSmartBulb.__readSettings()
+        '''
         return self.writeSettingCharacteristic.write(command)
 
     def __readSettings(self):
+        '''
+        Read settings from the bulb
+
+        Retrieves the status of the bulb, giving the following information:
+        - ON/OFF status
+        - WHITE/COLOR status
+        - Brightness
+        - temperature
+        - Color R/G/B
+
+        Returns
+        -------
+
+        See also
+        --------
+        BeewiSmartBulb.__writeSettings()
+        '''
         self.settings = self.readSettingCharacteristic.read()
         self.isOn = self.settings[0]
         if(0x2 <= (self.settings[1] & 0x0F) <= 0xB):
@@ -80,16 +115,37 @@ class BeewiSmartBulb:
         return self.settings
 
     def turnOn(self):
+        '''
+        Turn the bulb on
+        '''
         self.__readSettings()
         self.__writeSettings(BeewiSmartBulb.TURN_ON)
         self.isOn = 1
 
     def turnOff(self):
+        '''
+        Turn the bulb off
+        '''
         self.__readSettings()
         self.__writeSettings(BeewiSmartBulb.TURN_OFF)
         self.isOn = 0
 
     def setBrightness(self, brightness):
+        '''
+        Set the brightness of the bulb.
+
+        This method configures the brightness of the bulb in 10 steps (0 - 9).
+        Zero being the lower brightness and 9 being the highest.
+
+        Parameters
+        ----------
+        brightness : int
+            Brightness value from 0 to 9.
+
+        See also
+        --------
+        BeewiSmartBulb.setTemperature()
+        '''
         self.__readSettings()
         if(brightness > 9 or brightness < 0):
             print("Brightness should be a value between 0 and 9")
@@ -97,6 +153,23 @@ class BeewiSmartBulb:
         self.__writeSettings(BeewiSmartBulb.SET_BRIGHTNESS[brightness])
 
     def setTemperature(self, temperature):
+        '''
+        Set the temperature of the white light.
+
+        This method configures the temperature of the white light when in white
+        mode in 10 steps (0 - 9). Zero being the warmest configuration and 9
+        being the coolest configuration.
+
+        Parameters
+        ----------
+        temperature : int
+            White temperature value from 0 to 9.
+
+        See also
+        --------
+        BeewiSmartBulb.setBrightness()
+        '''
+
         self.__readSettings()
         if(temperature > 9 or temperature < 0):
             print("Temperature should be a value between 0 and 9")
@@ -104,12 +177,35 @@ class BeewiSmartBulb:
         self.__writeSettings(BeewiSmartBulb.SET_TEMPERATURE[temperature])
 
     def setWhite(self):
+        '''
+        Set the bulb in white mode.
+
+        This method configures the bulb to be in white mode, thus letting us
+        set the desired brightness and temperature of the light.
+        '''
+
         self.__readSettings()
         if(not self.isWhite):
             self.__writeSettings(BeewiSmartBulb.SET_WHITE)
             self.isWhite = 1
 
     def setColor(self, red, green, blue):
+        '''
+        Set the bulb in color mode.
+
+        This method configures the bulb to be in color mode. It uses 24-bit
+        color to set the desired color.
+
+        Parameters
+        ----------
+        red : int
+            Amount of red light in scale 0 - 255.
+        green : int
+            Amount of green light in scale 0 - 255.
+        blue : int
+            Amount of blue light in scale 0 - 255.
+        '''
+
         self.__readSettings()
         if(0 <= red <= 255) and (0 <= green <= 255) and (0 <= blue <= 255):
             self.isWhite = 0
@@ -120,6 +216,17 @@ class BeewiSmartBulb:
             self.__writeSettings(self.SET_COLOR)
 
     def setColorSequence(self, sequence):
+        '''
+        Set the bulb in color sequence mode.
+
+        This method configures the bulb to be in color sequence mode. There are
+        5 predefined color sequences.
+
+        Parameters
+        ----------
+        sequence : int
+            Sequence mode in scale 0 - 4
+        '''
         self.__readSettings()
         if (0 <= sequence <= 4):
             self.isWhite = 0
